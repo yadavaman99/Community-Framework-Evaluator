@@ -15,5 +15,8 @@ This project aims to design and apply a framework that evaluates mobile learning
 Research Methodology – Comparative Analysis
 Data Collection – Observation, App Testing, Online Research
 Tools Used:
-> Python
-> Database
+> Python - Flask, PyWebView
+> Wikipedia-API
+> JavaScript
+> HTML5 and CSS3
+> SQLite3
