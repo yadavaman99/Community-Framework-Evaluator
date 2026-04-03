@@ -1,59 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Framework Registry</title>
     <style>
-        body { font-family: sans-serif; background: #1a1a2e; color: white; padding: 40px; }
-        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-        th, td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; }
-        .btn-comp { background: #4facfe; color: white; padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; }
-        .btn-clear { color: #ff4d4d; text-decoration: none; font-size: 13px; margin-left: 15px; }
+        :root { --primary: #6366f1; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --danger: #f87171; }
+        body { background:var(--bg); font-family:'Inter', sans-serif; padding:40px; color:var(--text); }
+        .box { background:var(--card); border-radius:24px; padding:35px; border:1px solid #334155; }
+        .header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:15px; margin-bottom:20px; }
+        table { width:100%; border-collapse: collapse; }
+        th { text-align:left; font-size:10px; color:#94a3b8; text-transform:uppercase; padding:15px; border-bottom:2px solid #334155; }
+        td { padding:15px; border-bottom:1px solid #334155; font-size:14px; }
+        .pill { background:rgba(99, 102, 241, 0.1); color:var(--primary); padding:4px 10px; border-radius:8px; font-weight:bold; }
+        .btn-del { color:var(--danger); text-decoration:none; font-weight:bold; font-size:22px; padding:0 10px; border-radius:8px; transition:0.2s; }
+        .btn-del:hover { background: rgba(248, 113, 113, 0.1); }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h1>{{ user_name }}'s Activity</h1>
-            <a href="/" style="color:#ffd369; text-decoration:none;">← Back to Search</a>
-        </div>
-        <div style="max-width:300px; margin:auto;"><canvas id="myChart"></canvas></div>
-    </div>
-
-    <form action="/compare" method="POST" class="card" style="margin-top:30px;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2>Analysis History</h2>
-            <div>
-                <button type="submit" class="btn-comp">Compare Selected (2)</button>
-                <a href="/clear" class="btn-clear" onclick="return confirm('Delete history?')">🗑 Clear All</a>
-            </div>
+    <div class="box">
+        <div class="header">
+            <div><h2 style="margin:0;">Framework Registry</h2><p style="margin:5px 0 0 0; font-size:12px; color:#94a3b8;">Evaluation History</p></div>
+            <a href="/" style="font-size:12px; font-weight:bold; color:var(--primary); text-decoration:none;">← NEW ENTRY</a>
         </div>
         <table>
-            <thead><tr><th>Select</th><th>App Name</th><th>Category</th><th>Rating</th></tr></thead>
-            <tbody>
-                {% for item in history %}
-                <tr>
-                    <td><input type="checkbox" name="compare_ids" value="{{ item.id }}"></td>
-                    <td>{{ item.app_name }}</td>
-                    <td>{{ item.category }}</td>
-                    <td>{{ item.impact }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tr><th>Name</th><th>Educational Index</th><th>Verdict</th><th>Action</th></tr>
+            {% for item in items %}
+            <tr>
+                <td><strong>{{ item.app_name }}</strong></td>
+                <td><span class="pill">{{ item.total }}</span></td>
+                <td style="font-size:11px; font-weight:bold; color:#94a3b8;">{{ item.verdict }}</td>
+                <td>
+                    <a href="/delete/{{ item.id }}" class="btn-del" onclick="return confirm('Permanently delete this entry?')">×</a>
+                </td>
+            </tr>
+            {% endfor %}
         </table>
-    </form>
-
-    <script>
-        const stats = JSON.parse('{{ stats|safe }}');
-        new Chart(document.getElementById('myChart'), {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(stats),
-                datasets: [{ data: Object.values(stats), backgroundColor: ['#ff7eb3', '#ffd369', '#4facfe', '#00f2fe', '#a8edea'] }]
-            },
-            options: { plugins: { legend: { labels: { color: 'white' } } } }
-        });
-    </script>
+    </div>
 </body>
 </html>
