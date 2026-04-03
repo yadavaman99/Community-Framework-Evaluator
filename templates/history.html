@@ -1,39 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Framework Registry</title>
+    <title>Database Records</title>
     <style>
-        :root { --primary: #6366f1; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --danger: #f87171; }
-        body { background:var(--bg); font-family:'Inter', sans-serif; padding:40px; color:var(--text); }
-        .box { background:var(--card); border-radius:24px; padding:35px; border:1px solid #334155; }
-        .header { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:15px; margin-bottom:20px; }
-        table { width:100%; border-collapse: collapse; }
-        th { text-align:left; font-size:10px; color:#94a3b8; text-transform:uppercase; padding:15px; border-bottom:2px solid #334155; }
-        td { padding:15px; border-bottom:1px solid #334155; font-size:14px; }
-        .pill { background:rgba(99, 102, 241, 0.1); color:var(--primary); padding:4px 10px; border-radius:8px; font-weight:bold; }
-        .btn-del { color:var(--danger); text-decoration:none; font-weight:bold; font-size:22px; padding:0 10px; border-radius:8px; transition:0.2s; }
-        .btn-del:hover { background: rgba(248, 113, 113, 0.1); }
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 40px; }
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 15px; overflow: hidden; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #6366f1; font-size: 12px; text-transform: uppercase; }
+        .del-btn { color: #ef4444; text-decoration: none; font-weight: bold; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #6366f1; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <div class="header">
-            <div><h2 style="margin:0;">Framework Registry</h2><p style="margin:5px 0 0 0; font-size:12px; color:#94a3b8;">Evaluation History</p></div>
-            <a href="/" style="font-size:12px; font-weight:bold; color:var(--primary); text-decoration:none;">← NEW ENTRY</a>
-        </div>
-        <table>
-            <tr><th>Name</th><th>Educational Index</th><th>Verdict</th><th>Action</th></tr>
-            {% for item in items %}
-            <tr>
-                <td><strong>{{ item.app_name }}</strong></td>
-                <td><span class="pill">{{ item.total }}</span></td>
-                <td style="font-size:11px; font-weight:bold; color:#94a3b8;">{{ item.verdict }}</td>
-                <td>
-                    <a href="/delete/{{ item.id }}" class="btn-del" onclick="return confirm('Permanently delete this entry?')">×</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <a href="/" class="back-btn">← BACK TO DASHBOARD</a>
+    <h2>Evaluation History</h2>
+    <table>
+        <tr>
+            <th>Framework</th>
+            <th>Index</th>
+            <th>Verdict</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.app_name }}</td>
+            <td style="color:#6366f1; font-weight:bold;">{{ item.total }}</td>
+            <td>{{ item.verdict }}</td>
+            <td style="color:#94a3b8; font-size:12px;">{{ item.timestamp }}</td>
+            <td><a href="/delete/{{ item.id }}" class="del-btn">DELETE</a></td>
+        </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
