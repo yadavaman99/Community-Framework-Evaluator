@@ -2,136 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Community Framework Evaluation</title>
+    <title>Dashboard | Evaluator</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #6366f1; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --border: #334155; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
-        .container { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: stretch; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 1100px; display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
         .card { background: var(--card); border-radius: 24px; padding: 30px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); display: flex; flex-direction: column; }
         h3 { font-size: 11px; letter-spacing: 2px; color: var(--primary); margin: 0 0 15px 0; text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .header-link { font-size: 10px; font-weight: bold; color: var(--primary); text-decoration: none; }
-        
         label { display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 700; margin-top: 22px; color: #94a3b8; text-transform: uppercase; }
         .label-text { display: flex; align-items: center; gap: 10px; }
-        .dynamic-emoji { font-size: 18px; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: inline-block; }
-        
-        .val-num { color: var(--primary); font-size: 18px; font-weight: 900; min-width: 35px; text-align: right; }
-        input[type="text"], textarea { width: 100%; background: #0f172a; border: 2px solid var(--border); border-radius: 12px; color: white; padding: 12px; box-sizing: border-box; outline: none; margin-bottom: 10px; }
+        .dynamic-emoji { font-size: 18px; transition: 0.2s; }
+        .val-num { color: var(--primary); font-size: 18px; font-weight: 900; }
+        input[type="text"], textarea { width: 100%; background: #0f172a; border: 2px solid var(--border); border-radius: 12px; color: white; padding: 12px; box-sizing: border-box; outline: none; }
         .slider { -webkit-appearance: none; width: 100%; height: 6px; background: var(--border); border-radius: 10px; margin: 12px 0; outline: none; }
         .slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; cursor: pointer; border: 3px solid var(--card); }
-        
-        .btn-run { width: 100%; padding: 18px; background: var(--primary); color: white; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; margin-top: 25px; transition: 0.2s; }
-        .btn-run:hover { background: #4f46e5; transform: translateY(-2px); }
-        
+        .btn-run { width: 100%; padding: 18px; background: var(--primary); color: white; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; margin-top: 25px; }
         .total-idx { font-size: 95px; font-weight: 900; color: var(--primary); line-height: 0.8; margin: 15px 0; }
         .idle-state { opacity: 0.4; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; }
-        .idle-emoji { font-size: 80px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 <div class="container">
-    
     <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3>Evaluation Matrix</h3>
-            <a href="/history" class="header-link">[ VIEW HISTORY ]</a>
+            <h3>Input Matrix</h3>
+            <a href="/history" style="font-size:10px; color:var(--primary); text-decoration:none; font-weight:bold;">[ HISTORY ]</a>
         </div>
         <form method="POST">
             <input type="text" name="app_name" placeholder="FRAMEWORK NAME" required autocomplete="off">
             
             <script>
-                const emojis = {
-                    high: ["😫", "😟", "😐", "🙂", "🤩"], // Sad to Happy
-                    low:  ["🤩", "🙂", "😐", "😟", "😫"]  // Happy to Sad (for Plagiarism)
-                };
-
-                function updateUI(id, val, type='high') {
-                    // Update the number
+                const faces = ["😫", "😟", "😐", "🙂", "🤩"];
+                function updateUI(id, val) {
                     document.getElementById(id + '_v').innerText = val;
-                    
-                    // Determine emoji index (1-5 range mapped to 0-4 index)
-                    let idx = Math.floor(val - 1);
-                    if (idx > 4) idx = 4;
-                    if (idx < 0) idx = 0;
-                    
-                    // Update the emoji icon
-                    const icon = document.getElementById(id + '_e');
-                    icon.innerText = emojis[type][idx];
-                    
-                    // Add a small "pop" animation
-                    icon.style.transform = "scale(1.3)";
-                    setTimeout(() => icon.style.transform = "scale(1)", 150);
+                    let idx = Math.floor(val - 1); if (idx > 4) idx = 4;
+                    document.getElementById(id + '_e').innerText = faces[idx];
                 }
             </script>
 
-            <label>
-                <span class="label-text"><span class="dynamic-emoji" id="p_e">😐</span> Pedagogy</span>
-                <span class="val-num" id="p_v">3.0</span>
-            </label>
-            <input type="range" name="p" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('p', this.value, 'high')">
+            <label><span class="label-text"><span class="dynamic-emoji" id="p_e">😐</span> Pedagogy</span><span class="val-num" id="p_v">3.0</span></label>
+            <input type="range" name="p" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('p', this.value)">
 
-            <label>
-                <span class="label-text"><span class="dynamic-emoji" id="d_e">😐</span> Content Depth</span>
-                <span class="val-num" id="d_v">3.0</span>
-            </label>
-            <input type="range" name="d" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('d', this.value, 'high')">
+            <label><span class="label-text"><span class="dynamic-emoji" id="d_e">😐</span> Content Depth</span><span class="val-num" id="d_v">3.0</span></label>
+            <input type="range" name="d" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('d', this.value)">
 
-            <label>
-                <span class="label-text"><span class="dynamic-emoji" id="plag_e">🤩</span> Plagiarism</span>
-                <span class="val-num" id="plag_v">1.0</span>
-            </label>
-            <input type="range" name="plag" min="1" max="5" step="0.1" value="1" class="slider" oninput="updateUI('plag', this.value, 'low')">
+            <label><span class="label-text"><span class="dynamic-emoji" id="ux_e">😐</span> Interface UX</span><span class="val-num" id="ux_v">3.0</span></label>
+            <input type="range" name="ux" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('ux', this.value)">
 
-            <label>
-                <span class="label-text"><span class="dynamic-emoji" id="ux_e">😐</span> Interface UX</span>
-                <span class="val-num" id="ux_v">3.0</span>
-            </label>
-            <input type="range" name="ux" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('ux', this.value, 'high')">
+            <label><span class="label-text"><span class="dynamic-emoji" id="r_e">😐</span> Retention</span><span class="val-num" id="r_v">3.0</span></label>
+            <input type="range" name="r" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('r', this.value)">
 
-            <label>
-                <span class="label-text"><span class="dynamic-emoji" id="r_e">😐</span> Retention</span>
-                <span class="val-num" id="r_v">3.0</span>
-            </label>
-            <input type="range" name="r" min="1" max="5" step="0.1" value="3" class="slider" oninput="updateUI('r', this.value, 'high')">
-
-            <textarea name="notes" placeholder="Observations..." rows="2" style="margin-top:20px;"></textarea>
-            <button type="submit" class="btn-run">EXECUTE EVALUATION</button>
+            <textarea name="notes" placeholder="Notes..." rows="2" style="margin-top:20px;"></textarea>
+            <button type="submit" class="btn-run">ANALYZE</button>
         </form>
     </div>
 
     <div class="card" style="text-align: center; justify-content: center;">
         {% if result %}
-            <div style="background:var(--primary); color:white; padding:8px 22px; border-radius:40px; font-size:11px; font-weight:bold; margin-bottom:15px; display:inline-block; align-self:center;">{{ result.verdict }}</div>
-            <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:2px;">EDUCATIONAL INDEX</div>
+            <div style="background:var(--primary); color:white; padding:8px 20px; border-radius:40px; font-size:11px; font-weight:bold; margin-bottom:15px; display:inline-block;">{{ result.verdict }}</div>
+            <div style="font-size:10px; color:#94a3b8; letter-spacing:2px;">QUALITY INDEX</div>
             <div class="total-idx">{{ result.total }}</div>
-            
             <div style="width: 280px; margin: 15px auto;"><canvas id="radarChart"></canvas></div>
             <script>
                 new Chart(document.getElementById('radarChart'), {
                     type: 'radar',
                     data: {
-                        labels: ['Pedagogy', 'Depth', 'Plagiarism', 'UX', 'Retention'],
-                        datasets: [{
-                            data: {{ result.scores|safe }},
-                            backgroundColor: 'rgba(99, 102, 241, 0.2)',
-                            borderColor: '#6366f1', borderWidth: 3
-                        }]
+                        labels: ['Pedagogy', 'Depth', 'UX', 'Retention'],
+                        datasets: [{ data: {{ result.scores|safe }}, backgroundColor: 'rgba(99, 102, 241, 0.2)', borderColor: '#6366f1', borderWidth: 3 }]
                     },
-                    options: { 
-                        scales: { r: { min:0, max:5, ticks:{display:false}, grid:{color:'#334155'}, angleLines:{color:'#334155'}, pointLabels:{color:'#94a3b8', font:{weight:'bold'}} } }, 
-                        plugins:{legend:{display:false}} 
-                    }
+                    options: { scales: { r: { min:0, max:5, ticks:{display:false}, grid:{color:'#334155'}, angleLines:{color:'#334155'}, pointLabels:{color:'#94a3b8', font:{weight:'bold'}} } }, plugins:{legend:{display:false}} }
                 });
             </script>
         {% else %}
-            <div class="idle-state">
-                <span class="idle-emoji">📉</span>
-                <div style="font-weight: 900; letter-spacing: 2px; font-size: 14px; color: #94a3b8;">SYSTEM STANDBY</div>
-            </div>
+            <div class="idle-state"><span style="font-size:80px;">📊</span><div style="font-weight:900; color:#94a3b8; margin-top:10px;">AWAITING DATA</div></div>
         {% endif %}
     </div>
-
 </div>
 </body>
 </html>
